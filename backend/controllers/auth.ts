@@ -7,6 +7,7 @@ export class AuthController {
 
 		console.log('signup', body);
 	}
+
 	static async login(req: Request, res: Response) {
 		const body = loginSchema.parse(req.body);
 		console.log('login', body);
