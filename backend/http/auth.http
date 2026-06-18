@@ -3,15 +3,15 @@ POST http://localhost:3000/api/v1/auth/signup
 Content-Type: application/json
 
 {
-  "email": "some_email@gmail.com",
+  "email": "adm@gmail.com",
   "password": "!adm123@"
 }
 
 ### logins a user
-POST http://localhost:3000/api/v1/auth/signup
+POST http://localhost:3000/api/v1/auth/login
 Content-Type: application/json
 
 {
-  "email": "some_email@gmail.com",
+  "email": "adm@gmail.com",
   "password": "!adm123@"
 }

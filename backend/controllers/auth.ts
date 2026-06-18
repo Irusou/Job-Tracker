@@ -7,7 +7,6 @@ export class AuthController {
 	static async signup(req: Request, res: Response) {
 		try {
 			const body = registerSchema.parse(req.body);
-			console.log('signup', body);
 
 			const userId = await AuthService.signup(body);
 
@@ -28,11 +27,24 @@ export class AuthController {
 	static async login(req: Request, res: Response) {
 		try {
 			const body = loginSchema.parse(req.body);
-			await AuthService.signup(body);
-			console.log('login', body);
+
+			const token = await AuthService.login(body);
+
+			if (token instanceof Error) throw new Error(token.message);
+
+			if (!token) return res.status(500).send('failed to log in user');
+
+			return res
+				.status(201)
+				.json({ message: 'user logged in!', data: { token } });
 		} catch (error) {
 			if (error instanceof ZodError) {
 				return res.status(400).json({ message: 'invalid request format' });
+			}
+			if (error instanceof Error) {
+				return res
+					.status(500)
+					.json({ message: 'something went wrong', error: error.message });
 			}
 		}
 	}
