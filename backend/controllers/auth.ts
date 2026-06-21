@@ -1,36 +1,43 @@
 import type { Request, Response } from 'express';
-import { registerSchema, loginSchema } from '../schemas/auth.js';
+import { authSchema } from '../schemas/auth.js';
 import { ZodError } from 'zod';
 import { AuthService } from '../services/auth.js';
 
 export class AuthController {
-	static async signup(req: Request, res: Response) {
+	_authService: AuthService;
+
+	constructor(authService: AuthService) {
+		this._authService = authService;
+	}
+
+	signup = async (req: Request, res: Response) => {
 		try {
-			const body = registerSchema.parse(req.body);
+			const body = authSchema.parse(req.body);
 
-			const userId = await AuthService.signup(body);
+			const data = await this._authService.signup(body);
 
-			if (!userId) {
-				return res.status(500).send('failed to sign in user');
-			}
+			if (!data) return res.status(500).send('failed to create user');
 
 			return res
 				.status(201)
-				.json({ message: 'user signed in!', data: { id: userId } });
+				.json({ message: 'user signed in!', data: { id: data } });
 		} catch (error) {
 			if (error instanceof ZodError) {
 				return res.status(400).json({ message: 'invalid request format' });
 			}
+			if (error instanceof Error) {
+				return res
+					.status(500)
+					.json({ message: 'something went wrong', error: error.message });
+			}
 		}
-	}
+	};
 
-	static async login(req: Request, res: Response) {
+	login = async (req: Request, res: Response) => {
 		try {
-			const body = loginSchema.parse(req.body);
+			const body = authSchema.parse(req.body);
 
-			const token = await AuthService.login(body);
-
-			if (token instanceof Error) throw new Error(token.message);
+			const token = await this._authService.login(body);
 
 			if (!token) return res.status(500).send('failed to log in user');
 
@@ -47,5 +54,5 @@ export class AuthController {
 					.json({ message: 'something went wrong', error: error.message });
 			}
 		}
-	}
+	};
 }

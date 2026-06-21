@@ -1,40 +1,45 @@
-import type { Login, Register } from '../schemas/auth.ts';
+import type { AuthPayload } from '../schemas/auth.ts';
 import { prisma } from '../config/prisma.ts';
 import bcrypt from 'bcrypt';
 import { generateToken, hashPassword } from '../utils/jwt.ts';
+import type { AuthRepository } from '../repository/auth.ts';
 
 export class AuthService {
-	static async signup(body: Register): Promise<string | null> {
-		// verify if a user with a given email exists
-		const user = await prisma.user.findUnique({
-			where: {
-				email: body.email,
-			},
-		});
+	_authRepository: AuthRepository;
+	constructor(authRepository: AuthRepository) {
+		this._authRepository = authRepository;
+	}
 
-		// if it exists return
-		if (user) return null;
+	async signup(body: AuthPayload): Promise<string> {
+		try {
+			// verify if a user with a given email exists
+			const user = await this._authRepository.findByEmail(body.email);
 
-		// if it doesnt, create it and return its generated id
-		//! hash your passwords!!
-		const hashedPassword = await hashPassword(body.password);
+			if (user) throw new Error('email already in use');
 
-		const newUser = await prisma.user.create({
-			data: {
+			const hashedPassword = await hashPassword(body.password);
+
+			const newUser = await this._authRepository.save({
 				email: body.email,
 				password: hashedPassword,
-			},
-		});
-
-		return newUser.id;
-	}
-	static async login(body: Login): Promise<string | Error> {
-		try {
-			const user = await prisma.user.findUnique({
-				where: {
-					email: body.email,
-				},
 			});
+
+			if (!newUser) throw new Error('Failed to create new user');
+
+			return newUser.id;
+		} catch (error) {
+			if (error instanceof Error) {
+				throw new Error(error.message);
+			}
+
+			throw new Error('something went wrong', {
+				cause: error,
+			});
+		}
+	}
+	async login(body: AuthPayload): Promise<string> {
+		try {
+			const user = await this._authRepository.findByEmail(body.email);
 
 			if (!user) throw new Error('user not found');
 
@@ -49,10 +54,10 @@ export class AuthService {
 			return token;
 		} catch (error) {
 			if (error instanceof Error) {
-				return new Error(error.message);
+				throw new Error(error.message);
 			}
 
-			return new Error('something went wrong', {
+			throw new Error('something went wrong', {
 				cause: error,
 			});
 		}

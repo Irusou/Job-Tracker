@@ -1,9 +1,17 @@
 import express from 'express';
-import { AuthController } from '../controllers/auth.js';
+import { AuthController } from '../controllers/auth.ts';
+import { AuthService } from '../services/auth.ts';
+import { prisma } from '../config/prisma.ts';
+import { PostgresAuthRepository } from './../repository/auth.ts';
+
 const authRouter = express.Router();
 
-authRouter.post('/signup', AuthController.signup);
+const authRepository = new PostgresAuthRepository(prisma);
+const authService = new AuthService(authRepository);
+const authController = new AuthController(authService);
 
-authRouter.post('/login', AuthController.login);
+authRouter.post('/signup', authController.signup);
+
+authRouter.post('/login', authController.login);
 
 export { authRouter };
