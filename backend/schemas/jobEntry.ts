@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { JobStatus } from '../prisma/generated/prisma/index.js';
+import { JobStatus } from '@prisma/client';
 
 export const jobEntrySchema = z.object({
 	position: z.string().min(1),
