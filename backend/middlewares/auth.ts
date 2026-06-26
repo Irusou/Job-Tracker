@@ -2,7 +2,7 @@ import type { Request, Response, NextFunction } from 'express';
 import { validateToken } from '../utils/jwt.ts';
 import jwt from 'jsonwebtoken';
 
-export const jwtAuthMiddleware = async (
+export const jwtAuthMiddleware = (
 	req: Request,
 	res: Response,
 	next: NextFunction,

@@ -1,5 +1,4 @@
 import type { AuthPayload } from '../schemas/auth.ts';
-import { prisma } from '../config/prisma.ts';
 import bcrypt from 'bcrypt';
 import { generateToken, hashPassword } from '../utils/jwt.ts';
 import type { AuthRepository } from '../repository/auth.ts';
