@@ -1,5 +1,8 @@
 import type { JobsRepository } from '../repository/jobs.ts';
-import type { JobEntryInput } from '../schemas/jobEntry.ts';
+import type {
+	JobEntryInput,
+	JobEntryUpdateInput,
+} from '../schemas/jobEntry.ts';
 
 export class JobsService {
 	constructor(private readonly jobsRepository: JobsRepository) {}
@@ -17,5 +20,10 @@ export class JobsService {
 	addEntry = async (jobEntry: JobEntryInput) => {
 		const jobId = await this.jobsRepository.save(jobEntry);
 		return jobId;
+	};
+
+	updateEntry = async (jobId: string, jobEntry: JobEntryUpdateInput) => {
+		const job = await this.jobsRepository.update(jobId, jobEntry);
+		return job;
 	};
 }

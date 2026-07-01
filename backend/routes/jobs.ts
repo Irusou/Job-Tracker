@@ -19,8 +19,6 @@ jobsRouter.get('/:id', jwtAuthMiddleware, jobsController.getById);
 jobsRouter.post('/', jwtAuthMiddleware, jobsController.create);
 // PUT UPDATE ALL PROPERTIES
 jobsRouter.put('/:id', jwtAuthMiddleware, jobsController.update);
-// PATCH UPDATE SOME PROPERTIES
-jobsRouter.patch('/:id', jwtAuthMiddleware, jobsController.patch);
 // DELETE
 jobsRouter.delete('/:id', jwtAuthMiddleware, jobsController.delete);
 

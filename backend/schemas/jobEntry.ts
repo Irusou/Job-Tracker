@@ -13,3 +13,19 @@ export const jobEntrySchema = z.object({
 });
 
 export type JobEntryInput = z.infer<typeof jobEntrySchema>;
+
+export const updateJobEntrySchema = jobEntrySchema
+	.omit({
+		position: true,
+		company: true,
+		hours: true,
+		salary: true,
+		appliedAt: true,
+		userId: true,
+	})
+	.partial();
+
+export type JobEntryUpdateInput = {
+	lastReply?: Date | null;
+	status?: JobStatus;
+};

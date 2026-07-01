@@ -1,5 +1,8 @@
 import { JobStatus, type PrismaClient } from '@prisma/client';
-import type { JobEntryInput } from '../schemas/jobEntry.ts';
+import type {
+	JobEntryInput,
+	JobEntryUpdateInput,
+} from '../schemas/jobEntry.ts';
 
 export type UserJob = {
 	position: string;
@@ -17,11 +20,7 @@ export interface JobsRepository {
 	findAllByUser(userId: string): Promise<UserJob[]>;
 	findAllByUserAndJobId(userId: string, jobId: string): Promise<UserJob | null>;
 	save(jobPost: JobEntryInput): Promise<String | null>;
-	update(
-		id: string,
-		status?: JobStatus,
-		replyDate?: Date,
-	): Promise<String | null>;
+	update(id: string, jobEntry: JobEntryUpdateInput): Promise<UserJob | null>;
 	delete(id: string): Promise<String | null>;
 }
 
@@ -47,19 +46,23 @@ export class PostgresJobsRepository implements JobsRepository {
 		return job;
 	}
 
-	async save(jobPost: JobEntryInput) {
+	async save(jobEntry: JobEntryInput) {
 		const entry = await this.prisma.jobEntry.create({
 			data: {
-				...jobPost,
-				lastReply: jobPost.lastReply ?? null,
+				...jobEntry,
+				lastReply: jobEntry.lastReply ?? null,
 			},
 		});
 
 		return entry.id;
 	}
 
-	async update(id: string, status?: JobStatus, replyDate?: Date) {
-		return null;
+	async update(id: string, jobEntry: JobEntryUpdateInput) {
+		const entry = await this.prisma.jobEntry.update({
+			where: { id },
+			data: jobEntry,
+		});
+		return entry;
 	}
 
 	async delete(id: string) {
