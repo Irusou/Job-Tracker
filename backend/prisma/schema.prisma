@@ -27,15 +27,22 @@ enum JobStatus {
   INTERVIEWING
 }
 
+enum JobLocation {
+  REMOTE
+  ONSITE
+  HYBRID
+}
+
 model JobEntry {
-  id        String    @id @default(uuid())
+  id        String      @id @default(uuid())
   position  String
   company   String
+  location  JobLocation
   hours     String
   salary    Int
   appliedAt DateTime
   lastReply DateTime?
-  status    JobStatus
+  status    JobStatus   @default(APPLIED)
   userId    String
-  user      User      @relation(fields: [userId], references: [id])
+  user      User        @relation(fields: [userId], references: [id])
 }

@@ -1,4 +1,4 @@
-import { JobStatus, type PrismaClient } from '@prisma/client';
+import { JobLocation, JobStatus, type PrismaClient } from '@prisma/client';
 import type {
 	JobEntryInput,
 	JobEntryUpdateInput,
@@ -7,6 +7,7 @@ import type {
 export type UserJob = {
 	position: string;
 	company: string;
+	location: JobLocation;
 	hours: string;
 	salary: number;
 	appliedAt: Date;

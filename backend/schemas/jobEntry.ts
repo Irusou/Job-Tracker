@@ -1,14 +1,15 @@
 import { z } from 'zod';
-import { JobStatus } from '@prisma/client';
+import { JobLocation, JobStatus } from '@prisma/client';
 
 export const jobEntrySchema = z.object({
 	position: z.string().min(1),
 	company: z.string().min(1),
+	location: z.enum(JobLocation),
 	hours: z.string(),
 	salary: z.number().positive(),
 	appliedAt: z.coerce.date(),
 	lastReply: z.coerce.date().nullable().optional(),
-	status: z.enum(JobStatus),
+	status: z.enum(JobStatus).default('APPLIED'),
 	userId: z.uuid(),
 });
 
