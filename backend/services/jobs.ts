@@ -26,4 +26,9 @@ export class JobsService {
 		const job = await this.jobsRepository.update(jobId, jobEntry);
 		return job;
 	};
+
+	deleteById = async (jobId: string) => {
+		const deleted = await this.jobsRepository.delete(jobId);
+		return deleted;
+	};
 }

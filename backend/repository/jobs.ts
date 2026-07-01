@@ -21,7 +21,7 @@ export interface JobsRepository {
 	findAllByUserAndJobId(userId: string, jobId: string): Promise<UserJob | null>;
 	save(jobPost: JobEntryInput): Promise<String | null>;
 	update(id: string, jobEntry: JobEntryUpdateInput): Promise<UserJob | null>;
-	delete(id: string): Promise<String | null>;
+	delete(id: string): Promise<UserJob | null>;
 }
 
 export class PostgresJobsRepository implements JobsRepository {
@@ -66,6 +66,11 @@ export class PostgresJobsRepository implements JobsRepository {
 	}
 
 	async delete(id: string) {
-		return null;
+		const entry = await this.prisma.jobEntry.delete({
+			where: {
+				id,
+			},
+		});
+		return entry;
 	}
 }

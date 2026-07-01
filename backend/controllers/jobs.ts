@@ -77,6 +77,19 @@ export class JobsController {
 
 	update = async (req: Request<{ id: string }>, res: Response) => {
 		try {
+			const job = await this.jobsService.getUserJobById(
+				req.user?.userId,
+				req.params.id,
+			);
+
+			if (!job) {
+				return res.status(404).json({
+					statusCode: 404,
+					message: 'Job entry not found',
+					data: null,
+				});
+			}
+
 			const raw = z.parse(updateJobEntrySchema, req.body);
 
 			const entry: JobEntryUpdateInput = {
@@ -112,5 +125,34 @@ export class JobsController {
 		}
 	};
 
-	delete = async (req: Request<{ id: string }>, res: Response) => {};
+	delete = async (req: Request<{ id: string }>, res: Response) => {
+		try {
+			const job = await this.jobsService.getUserJobById(
+				req.user?.userId,
+				req.params.id,
+			);
+
+			if (!job) {
+				return res.status(404).json({
+					statusCode: 404,
+					message: 'Job entry not found',
+					data: null,
+				});
+			}
+
+			const deleted = await this.jobsService.deleteById(job.id);
+			return res.status(200).json({
+				statusCode: 200,
+				message: 'Job entry deleted',
+				data: deleted,
+			});
+		} catch (error) {
+			console.error(error);
+
+			return res.status(500).json({
+				statusCode: 500,
+				message: 'Internal server error',
+			});
+		}
+	};
 }
