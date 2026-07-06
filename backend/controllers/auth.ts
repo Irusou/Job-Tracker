@@ -42,8 +42,14 @@ export class AuthController {
 			if (!token) return res.status(500).send('failed to log in user');
 
 			return res
-				.status(201)
-				.json({ message: 'user logged in!', data: { token } });
+				.cookie('token', token, {
+					httpOnly: true,
+					secure: process.env.NODE_ENV === 'production',
+					sameSite: 'lax',
+					maxAge: 1000 * 60 * 60 * 24, // 1 day
+				})
+				.status(200)
+				.json({ message: 'user logged in!' });
 		} catch (error) {
 			if (error instanceof ZodError) {
 				return res.status(400).json({ message: 'invalid request format' });
@@ -54,5 +60,11 @@ export class AuthController {
 					.json({ message: 'something went wrong', error: error.message });
 			}
 		}
+	};
+
+	logout = async (_req: Request, res: Response) => {
+		res.clearCookie('token');
+
+		return res.json({ message: 'Logged out' });
 	};
 }

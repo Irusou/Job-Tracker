@@ -1,5 +1,5 @@
 import type { Request, Response } from 'express';
-import type { ApplicationsService } from '../services/jobs.ts';
+import type { ApplicationsService } from '../services/application.ts';
 import {
 	applicationSchema,
 	updateApplicationSchema,

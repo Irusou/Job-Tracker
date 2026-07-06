@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import cookieParser from 'cookie-parser';
 import { authRouter, applicationsRouter } from './routes/index.ts';
 
 dotenv.config();
@@ -8,6 +9,7 @@ dotenv.config();
 const app = express();
 
 app.use(cors());
+app.use(cookieParser());
 app.use(express.json());
 app.use('/api/v1/auth', authRouter);
 app.use('/api/v1/applications', applicationsRouter);

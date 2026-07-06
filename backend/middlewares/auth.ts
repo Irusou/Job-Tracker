@@ -8,17 +8,15 @@ export const jwtAuthMiddleware = (
 	next: NextFunction,
 ) => {
 	// get the token from the request object
-	const authorizationToken = req.headers['authorization'];
+	const token = req.cookies.token;
 
 	// if no object or no token or invalid token return
-	if (!authorizationToken)
-		return res.status(401).json({ message: 'Unauthorized access' });
+	if (!token) return res.status(401).json({ message: 'Unauthorized' });
 
 	try {
-		const payload = validateToken(authorizationToken);
+		const payload = validateToken(token);
 
-		if (!payload)
-			return res.status(401).json({ message: 'Unauthorized access' });
+		if (!payload) return res.status(401).json({ message: 'Unauthorized' });
 
 		// else proceed
 		req.user = payload;

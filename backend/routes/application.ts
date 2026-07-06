@@ -1,7 +1,7 @@
 import express from 'express';
-import { ApplicationsController } from '../controllers/jobs.ts';
+import { ApplicationsController } from '../controllers/application.ts';
 import { prisma } from '../config/prisma.ts';
-import { ApplicationsService } from '../services/jobs.ts';
+import { ApplicationsService } from '../services/application.ts';
 import { PostgresApplicationsRepository } from '../repository/application.ts';
 import { jwtAuthMiddleware } from '../middlewares/auth.ts';
 
