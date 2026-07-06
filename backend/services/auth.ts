@@ -36,7 +36,9 @@ export class AuthService {
 			});
 		}
 	}
-	async login(body: AuthPayload): Promise<string> {
+	async login(
+		body: AuthPayload,
+	): Promise<{ token: string; user: { id: string; email: string } }> {
 		try {
 			const user = await this._authRepository.findByEmail(body.email);
 
@@ -50,7 +52,13 @@ export class AuthService {
 
 			const token = generateToken({ userId: user.id, email: user.email });
 
-			return token;
+			return {
+				token,
+				user: {
+					id: user.id,
+					email: user.email,
+				},
+			};
 		} catch (error) {
 			if (error instanceof Error) {
 				throw new Error(error.message);

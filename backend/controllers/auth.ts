@@ -37,7 +37,7 @@ export class AuthController {
 		try {
 			const body = authSchema.parse(req.body);
 
-			const token = await this._authService.login(body);
+			const { token, user } = await this._authService.login(body);
 
 			if (!token) return res.status(500).send('failed to log in user');
 
@@ -49,7 +49,10 @@ export class AuthController {
 					maxAge: 1000 * 60 * 60 * 24, // 1 day
 				})
 				.status(200)
-				.json({ message: 'user logged in!' });
+				.json({
+					message: 'user logged in!',
+					user,
+				});
 		} catch (error) {
 			if (error instanceof ZodError) {
 				return res.status(400).json({ message: 'invalid request format' });
