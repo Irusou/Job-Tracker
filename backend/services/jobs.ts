@@ -1,34 +1,44 @@
-import type { JobsRepository } from '../repository/jobs.ts';
+import type { ApplicationsRepository } from '../repository/application.ts';
 import type {
-	JobEntryInput,
-	JobEntryUpdateInput,
-} from '../schemas/jobEntry.ts';
+	ApplicationInput,
+	ApplicationUpdateInput,
+} from '../schemas/application.ts';
 
-export class JobsService {
-	constructor(private readonly jobsRepository: JobsRepository) {}
+export class ApplicationsService {
+	constructor(
+		private readonly applicationsRepository: ApplicationsRepository,
+	) {}
 
-	getUserJobs = async (userId: string) => {
-		const userJobs = await this.jobsRepository.findAllByUser(userId);
-		return userJobs;
+	getUserApplications = async (userId: string) => {
+		const userApplications =
+			await this.applicationsRepository.findAllByUser(userId);
+		return userApplications;
 	};
 
-	getUserJobById = async (userId: string, jobId: string) => {
-		const job = await this.jobsRepository.findAllByUserAndJobId(userId, jobId);
-		return job;
+	getUserApplicationById = async (userId: string, applicationId: string) => {
+		const application =
+			await this.applicationsRepository.findAllByUserAndApplicationId(
+				userId,
+				applicationId,
+			);
+		return application;
 	};
 
-	addEntry = async (jobEntry: JobEntryInput) => {
-		const jobId = await this.jobsRepository.save(jobEntry);
-		return jobId;
+	addEntry = async (application: ApplicationInput) => {
+		const applicationId = await this.applicationsRepository.save(application);
+		return applicationId;
 	};
 
-	updateEntry = async (jobId: string, jobEntry: JobEntryUpdateInput) => {
-		const job = await this.jobsRepository.update(jobId, jobEntry);
-		return job;
+	updateEntry = async (jobId: string, application: ApplicationUpdateInput) => {
+		const updatedApplication = await this.applicationsRepository.update(
+			jobId,
+			application,
+		);
+		return updatedApplication;
 	};
 
-	deleteById = async (jobId: string) => {
-		const deleted = await this.jobsRepository.delete(jobId);
+	deleteById = async (applicationId: string) => {
+		const deleted = await this.applicationsRepository.delete(applicationId);
 		return deleted;
 	};
 }

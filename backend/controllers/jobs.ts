@@ -1,61 +1,70 @@
 import type { Request, Response } from 'express';
-import type { JobsService } from '../services/jobs.ts';
+import type { ApplicationsService } from '../services/jobs.ts';
 import {
-	jobEntrySchema,
-	updateJobEntrySchema,
-	type JobEntryUpdateInput,
-} from '../schemas/jobEntry.ts';
+	applicationSchema,
+	updateApplicationSchema,
+	type ApplicationUpdateInput,
+} from '../schemas/application.ts';
 import z from 'zod';
 
-export class JobsController {
-	constructor(private readonly jobsService: JobsService) {}
+export class ApplicationsController {
+	constructor(private readonly applicationsService: ApplicationsService) {}
 
 	getAll = async (req: Request, res: Response) => {
-		const jobs = await this.jobsService.getUserJobs(req.user.userId);
+		const applications = await this.applicationsService.getUserApplications(
+			req.user.userId,
+		);
 
 		return res.status(200).json({
 			statusCode: 200,
-			message: 'Jobs retrieved successfully',
-			data: jobs,
+			message: 'Applications retrieved successfully',
+			data: applications,
 		});
 	};
 
 	getById = async (req: Request<{ id: string }>, res: Response) => {
-		const jobId = req.params.id;
+		const applicationId = req.params.id;
 
-		if (!jobId || jobId === undefined || jobId === null) {
+		if (
+			!applicationId ||
+			applicationId === undefined ||
+			applicationId === null
+		) {
 			return res
 				.status(400)
 				.json({ statusCode: 400, message: 'Bad Request', data: null });
 		}
 
-		const job = await this.jobsService.getUserJobById(req.user.userId, jobId!);
+		const application = await this.applicationsService.getUserApplicationById(
+			req.user.userId,
+			applicationId!,
+		);
 
-		if (!job) {
+		if (!application) {
 			return res.status(404).json({
 				statusCode: 404,
-				message: 'Job not found',
+				message: 'Application not found',
 				data: null,
 			});
 		}
 
 		return res.status(200).json({
 			statusCode: 200,
-			message: 'Job retrieved successfully',
-			data: job,
+			message: 'Application retrieved successfully',
+			data: application,
 		});
 	};
 
 	create = async (req: Request, res: Response) => {
 		try {
-			const entry = z.parse(jobEntrySchema, req.body);
+			const entry = z.parse(applicationSchema, req.body);
 
-			const jobId = await this.jobsService.addEntry(entry);
+			const applicationId = await this.applicationsService.addEntry(entry);
 
 			return res.status(201).json({
 				statusCode: 201,
-				message: 'Job created successfully',
-				data: jobId,
+				message: 'Application created successfully',
+				data: applicationId,
 			});
 		} catch (error) {
 			if (error instanceof z.ZodError) {
@@ -77,27 +86,27 @@ export class JobsController {
 
 	update = async (req: Request<{ id: string }>, res: Response) => {
 		try {
-			const job = await this.jobsService.getUserJobById(
+			const application = await this.applicationsService.getUserApplicationById(
 				req.user?.userId,
 				req.params.id,
 			);
 
-			if (!job) {
+			if (!application) {
 				return res.status(404).json({
 					statusCode: 404,
-					message: 'Job entry not found',
+					message: 'Application not found',
 					data: null,
 				});
 			}
 
-			const raw = z.parse(updateJobEntrySchema, req.body);
+			const raw = z.parse(updateApplicationSchema, req.body);
 
-			const entry: JobEntryUpdateInput = {
+			const entry: ApplicationUpdateInput = {
 				...(raw.status !== undefined && { status: raw.status }),
 				...(raw.lastReply !== undefined && { lastReply: raw.lastReply }),
 			};
 
-			const updatedEntry = await this.jobsService.updateEntry(
+			const updatedEntry = await this.applicationsService.updateEntry(
 				req.params.id,
 				entry,
 			);
@@ -127,23 +136,23 @@ export class JobsController {
 
 	delete = async (req: Request<{ id: string }>, res: Response) => {
 		try {
-			const job = await this.jobsService.getUserJobById(
+			const application = await this.applicationsService.getUserApplicationById(
 				req.user?.userId,
 				req.params.id,
 			);
 
-			if (!job) {
+			if (!application) {
 				return res.status(404).json({
 					statusCode: 404,
-					message: 'Job entry not found',
+					message: 'Application not found',
 					data: null,
 				});
 			}
 
-			const deleted = await this.jobsService.deleteById(job.id);
+			const deleted = await this.applicationsService.deleteById(application.id);
 			return res.status(200).json({
 				statusCode: 200,
-				message: 'Job entry deleted',
+				message: 'Application deleted',
 				data: deleted,
 			});
 		} catch (error) {

@@ -1,4 +1,4 @@
 import { authRouter } from './auth.ts';
-import { jobsRouter } from './jobs.ts';
+import { applicationsRouter } from './application.ts';
 
-export { authRouter, jobsRouter };
+export { authRouter, applicationsRouter };
