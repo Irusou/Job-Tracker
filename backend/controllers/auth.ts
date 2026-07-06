@@ -67,4 +67,10 @@ export class AuthController {
 
 		return res.json({ message: 'Logged out' });
 	};
+
+	me = async (req: Request, res: Response) => {
+		const { user } = req;
+
+		return res.json(user);
+	};
 }
