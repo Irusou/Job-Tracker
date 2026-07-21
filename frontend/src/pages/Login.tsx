@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Eye, EyeClosed } from 'lucide-react';
 import { BACKEND_PATH } from '../config/url';
+import { Navigate } from 'react-router';
 
 export default function Login() {
 	const [formData, setFormData] = useState({
@@ -37,7 +38,10 @@ export default function Login() {
 			});
 
 			const data = await res.json();
-			console.log(data);
+
+			if (data.user) {
+				return <Navigate to="/applications" replace />;
+			}
 		} catch (error) {
 			console.log(error);
 		}

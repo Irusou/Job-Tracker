@@ -1,5 +1,4 @@
 import { createBrowserRouter, RouterProvider } from 'react-router';
-
 import Applications from './pages/Applications';
 import Login from './pages/Login';
 import Signin from './pages/Signin';
@@ -57,13 +56,13 @@ function App() {
 		},
 	]);
 	return (
-		<div className="min-h-screen bg-linear-to-br from-slate-100 via-blue-100 to-indigo-200 flex items-center justify-center p-4">
-			{/* header */}
+		<>
 			<AuthProvider>
+				{/* header */}
 				<RouterProvider router={router} />
+				{/* footer */}
 			</AuthProvider>
-			{/* footer */}
-		</div>
+		</>
 	);
 }
 

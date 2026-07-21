@@ -1,7 +1,8 @@
 import { redirect } from 'react-router';
+import { BACKEND_PATH } from '../config/url';
 
 export async function requireAuth() {
-	const res = await fetch('http://localhost:3000/api/v1/auth/me', {
+	const res = await fetch(`${BACKEND_PATH}/auth/me`, {
 		credentials: 'include',
 	});
 
