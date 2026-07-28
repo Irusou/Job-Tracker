@@ -1,12 +1,15 @@
 import {
 	ApplicationLocation,
 	ApplicationStatus,
+	Prisma,
 	type PrismaClient,
 } from '@prisma/client';
 import type {
-	ApplicationInput,
+	CreateApplicationInput,
 	ApplicationUpdateInput,
+	CreateApplicationServiceInput,
 } from '../schemas/application.ts';
+import { prisma } from '../config/prisma.ts';
 
 export type UserJob = {
 	position: string;
@@ -27,7 +30,7 @@ export interface ApplicationsRepository {
 		userId: string,
 		applicationId: string,
 	): Promise<UserJob | null>;
-	save(jobPost: ApplicationInput): Promise<String | null>;
+	save(jobPost: CreateApplicationInput): Promise<String | null>;
 	update(
 		id: string,
 		application: ApplicationUpdateInput,
@@ -57,7 +60,7 @@ export class PostgresApplicationsRepository implements ApplicationsRepository {
 		return application;
 	}
 
-	async save(application: ApplicationInput) {
+	async save(application: CreateApplicationServiceInput) {
 		const entry = await this.prisma.application.create({
 			data: {
 				...application,
@@ -69,11 +72,22 @@ export class PostgresApplicationsRepository implements ApplicationsRepository {
 	}
 
 	async update(id: string, application: ApplicationUpdateInput) {
-		const entry = await this.prisma.application.update({
-			where: { id },
-			data: application,
+		const updateData: Prisma.ApplicationUpdateInput = {};
+
+		if (application.status !== undefined) {
+			updateData.status = application.status;
+		}
+
+		if (application.lastReply !== undefined) {
+			updateData.lastReply = application.lastReply;
+		}
+
+		return await prisma.application.update({
+			where: {
+				id,
+			},
+			data: updateData,
 		});
-		return entry;
 	}
 
 	async delete(id: string) {

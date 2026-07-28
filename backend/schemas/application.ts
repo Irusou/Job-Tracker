@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { ApplicationLocation, ApplicationStatus } from '@prisma/client';
 
-export const applicationSchema = z.object({
+export const createApplicationSchema = z.object({
 	position: z.string().min(1),
 	company: z.string().min(1),
 	location: z.enum(ApplicationLocation),
@@ -10,23 +10,17 @@ export const applicationSchema = z.object({
 	appliedAt: z.coerce.date(),
 	lastReply: z.coerce.date().nullable().optional(),
 	status: z.enum(ApplicationStatus).default('APPLIED'),
-	userId: z.uuid(),
 });
 
-export type ApplicationInput = z.infer<typeof applicationSchema>;
+export type CreateApplicationInput = z.infer<typeof createApplicationSchema>;
 
-export const updateApplicationSchema = applicationSchema
-	.omit({
-		position: true,
-		company: true,
-		hours: true,
-		salary: true,
-		appliedAt: true,
-		userId: true,
-	})
-	.partial();
+export const updateApplicationSchema = z.object({
+	lastReply: z.coerce.date().nullable().optional(),
+	status: z.enum(ApplicationStatus).optional(),
+});
 
-export type ApplicationUpdateInput = {
-	lastReply?: Date | null;
-	status?: ApplicationStatus;
+export type ApplicationUpdateInput = z.infer<typeof updateApplicationSchema>;
+
+export type CreateApplicationServiceInput = CreateApplicationInput & {
+	userId: string;
 };

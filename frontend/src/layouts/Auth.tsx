@@ -1,5 +1,6 @@
 import { Navigate, Outlet } from 'react-router';
 import { useAuth } from '../hooks/useAuth';
+import Header from '@/components/Header';
 
 export default function AuthLayout() {
 	const { user, loading } = useAuth();
@@ -12,5 +13,10 @@ export default function AuthLayout() {
 		return <Navigate to="/login" replace />;
 	}
 
-	return <Outlet />;
+	return (
+		<>
+			<Header />
+			<Outlet />
+		</>
+	);
 }

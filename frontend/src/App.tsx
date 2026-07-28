@@ -5,19 +5,13 @@ import Signin from './pages/Signin';
 import Board from './pages/Board';
 import DashBoard from './pages/DashBoard';
 import Application from './pages/Application';
-import Home from './pages/Home';
 import { getApplicationById } from './loaders/getApplicationById';
 import { getAllApplications } from './loaders/getAllApplications';
 import AuthLayout from './layouts/Auth';
 import { requireAuth } from './loaders/requireAuth';
-import AuthProvider from './context/AuthProvider';
 
 function App() {
 	const router = createBrowserRouter([
-		{
-			path: '/',
-			Component: Home,
-		},
 		{
 			path: '/login',
 			Component: Login,
@@ -55,15 +49,7 @@ function App() {
 			],
 		},
 	]);
-	return (
-		<>
-			<AuthProvider>
-				{/* header */}
-				<RouterProvider router={router} />
-				{/* footer */}
-			</AuthProvider>
-		</>
-	);
+	return <RouterProvider router={router} />;
 }
 
 export default App;

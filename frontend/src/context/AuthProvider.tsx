@@ -29,12 +29,17 @@ export default function AuthProvider({
 		checkAuth();
 	}, []);
 
+	const login = (user: User) => setUser(user);
+
+	const logout = () => setUser(null);
+
 	return (
 		<AuthContext.Provider
 			value={{
 				user,
 				loading,
-				setUser,
+				login,
+				logout,
 			}}
 		>
 			{children}

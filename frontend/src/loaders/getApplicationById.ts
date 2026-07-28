@@ -16,7 +16,13 @@ export const getApplicationById = async (
 
 		const application = await response.json();
 
-		return application.data as Application;
+		return {
+			...application.data,
+			appliedAt: new Date(application.data.appliedAt),
+			lastReply: application.data.lastReply
+				? new Date(application.data.lastReply)
+				: null,
+		};
 	} catch (error) {
 		console.log(error);
 		return null;

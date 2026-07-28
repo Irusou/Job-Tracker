@@ -1,7 +1,7 @@
 import type { Request, Response } from 'express';
 import type { ApplicationsService } from '../services/application.ts';
 import {
-	applicationSchema,
+	createApplicationSchema,
 	updateApplicationSchema,
 	type ApplicationUpdateInput,
 } from '../schemas/application.ts';
@@ -57,9 +57,13 @@ export class ApplicationsController {
 
 	create = async (req: Request, res: Response) => {
 		try {
-			const entry = z.parse(applicationSchema, req.body);
+			const entry = z.parse(createApplicationSchema, req.body);
+			const userId = req.user.userId;
 
-			const applicationId = await this.applicationsService.addEntry(entry);
+			const applicationId = await this.applicationsService.addEntry({
+				...entry,
+				userId,
+			});
 
 			return res.status(201).json({
 				statusCode: 201,

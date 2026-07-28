@@ -1,7 +1,8 @@
 import type { ApplicationsRepository } from '../repository/application.ts';
 import type {
-	ApplicationInput,
+	CreateApplicationInput,
 	ApplicationUpdateInput,
+	CreateApplicationServiceInput,
 } from '../schemas/application.ts';
 
 export class ApplicationsService {
@@ -24,7 +25,7 @@ export class ApplicationsService {
 		return application;
 	};
 
-	addEntry = async (application: ApplicationInput) => {
+	addEntry = async (application: CreateApplicationServiceInput) => {
 		const applicationId = await this.applicationsRepository.save(application);
 		return applicationId;
 	};

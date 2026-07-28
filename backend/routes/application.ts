@@ -22,7 +22,7 @@ applicationsRouter.get(
 // POST create
 applicationsRouter.post('/', jwtAuthMiddleware, applicationsController.create);
 // PUT UPDATE ALL PROPERTIES
-applicationsRouter.put(
+applicationsRouter.patch(
 	'/:id',
 	jwtAuthMiddleware,
 	applicationsController.update,

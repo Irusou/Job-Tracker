@@ -1,14 +1,38 @@
-import { Eye, EyeClosed } from 'lucide-react';
 import { useState } from 'react';
+import { Eye, EyeClosed } from 'lucide-react';
+import { BACKEND_PATH } from '../config/url';
+import { useNavigate } from 'react-router';
+import {
+	AbsoluteCenter,
+	Button,
+	Center,
+	Container,
+	Field,
+	Flex,
+	Heading,
+	Input,
+	InputGroup,
+	Text,
+} from '@chakra-ui/react';
+
+interface SigninForm {
+	email: string;
+	password: string;
+	confirmPassword: string;
+}
 
 export default function Signin() {
-	const [formData, setFormData] = useState({
+	const [formData, setFormData] = useState<SigninForm>({
 		email: '',
 		password: '',
 		confirmPassword: '',
 	});
+
 	const [passwordVisible, setPasswordVisible] = useState(false);
 	const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(false);
+	const [loading, setLoading] = useState(false);
+
+	const navigate = useNavigate();
 
 	type FormField = keyof typeof formData;
 
@@ -28,146 +52,152 @@ export default function Signin() {
 	const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
 		e.preventDefault();
 
-		console.log(formData);
+		if (formData.password !== formData.confirmPassword) {
+			return;
+		}
+
+		try {
+			setLoading(true);
+
+			const res = await fetch(`${BACKEND_PATH}/auth/signup`, {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				credentials: 'include',
+				body: JSON.stringify({
+					email: formData.email,
+					password: formData.password,
+				}),
+			});
+
+			if (!res.ok) {
+				throw new Error('Failed to create account');
+			}
+
+			navigate('/login', {
+				replace: true,
+			});
+		} catch (error) {
+			console.error(error);
+		} finally {
+			setLoading(false);
+		}
 	};
 
 	const isFormValid =
 		formData.email.trim() !== '' &&
+		/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email) &&
 		formData.password.trim() !== '' &&
 		formData.confirmPassword.trim() !== '' &&
-		formData.password === formData.confirmPassword &&
-		/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email);
-
-	const passwordsMatch =
-		formData.confirmPassword === '' ||
 		formData.password === formData.confirmPassword;
 
 	return (
-		<form
-			onSubmit={handleSubmit}
-			className="w-full max-w-md rounded-2xl bg-white p-8 shadow-xl border border-slate-200 space-y-6"
-		>
-			<div className="text-center">
-				<h1 className="text-3xl font-bold text-slate-800">Create an account</h1>
-				<p className="mt-2 text-sm text-slate-500">Sign up to get started</p>
-			</div>
-			<div>
-				<input
-					className="
-					w-full
-					rounded-lg
-					border
-					border-slate-300
-					px-4
-					py-3
-					outline-none
-					transition-all
-					placeholder:text-slate-400
-					focus:border-blue-500
-					focus:ring-4
-					focus:ring-blue-200
-					invalid:border-red-500
-					valid:border-green-500
-		"
-					type="email"
-					required
-					placeholder="Email"
-					value={formData.email}
-					onChange={(
-						e: React.ChangeEvent<HTMLInputElement, HTMLInputElement>,
-					) => handleInputChange('email', e.target.value)}
-				/>
-			</div>
-			<div className="relative w-full">
-				<input
-					className={`
-						w-full rounded-lg border px-4 pr-12 py-3 outline-none transition
-						${
-							passwordsMatch
-								? 'border-slate-300 focus:border-blue-500'
-								: 'border-red-500 focus:border-red-500'
-						}
-						focus:ring-4
-						focus:ring-blue-200
-					`}
-					type={passwordVisible ? 'text' : 'password'}
-					required
-					placeholder="Password"
-					value={formData.password}
-					onChange={(
-						e: React.ChangeEvent<HTMLInputElement, HTMLInputElement>,
-					) => handleInputChange('password', e.target.value)}
-				/>
-				<button
-					type="button"
-					onClick={handleTogglePasswordVisibility}
-					className="
-						absolute
-						right-3
-						top-1/2
-						-translate-y-1/2
-						text-slate-500
-						hover:text-slate-800
-					"
-				>
-					{passwordVisible ? <EyeClosed /> : <Eye />}
-				</button>
-			</div>
-			<div className="relative w-full">
-				<input
-					className={`
-    w-full rounded-lg border px-4 pr-12 py-3 outline-none transition
-    ${
-			passwordsMatch
-				? 'border-slate-300 focus:border-blue-500'
-				: 'border-red-500 focus:border-red-500'
-		}
-    focus:ring-4
-    focus:ring-blue-200
-  `}
-					type={confirmPasswordVisible ? 'text' : 'password'}
-					required
-					placeholder="Confirm Password"
-					value={formData.confirmPassword}
-					onChange={(
-						e: React.ChangeEvent<HTMLInputElement, HTMLInputElement>,
-					) => handleInputChange('confirmPassword', e.target.value)}
-				/>
-				<button
-					type="button"
-					onClick={handleToggleConfirmPasswordVisibility}
-					className="
-						absolute
-						right-3
-						top-1/2
-						-translate-y-1/2
-						text-slate-500
-						hover:text-slate-800
-					"
-				>
-					{confirmPasswordVisible ? <EyeClosed /> : <Eye />}
-				</button>
-			</div>
-			<div>
-				{formData.confirmPassword &&
-					formData.password !== formData.confirmPassword && (
-						<p className="mt-1 text-sm text-red-500">Passwords do not match.</p>
-					)}
-			</div>
-			<button
-				type="submit"
-				disabled={!isFormValid}
-				className={`
-					w-full rounded-lg py-3 font-semibold transition
-					${
-						isFormValid
-							? 'bg-blue-600 text-white hover:bg-blue-700 active:scale-[0.98]'
-							: 'bg-slate-300 text-slate-500 cursor-not-allowed'
-					}
-				`}
-			>
-				Sign up
-			</button>
-		</form>
+		<AbsoluteCenter>
+			<Container background="Background" padding="1rem" borderRadius="2xl">
+				<Flex gap="1rem" direction="column">
+					<form onSubmit={handleSubmit}>
+						<Container>
+							<Heading size="2xl">Create your account</Heading>
+
+							<Text fontSize="sm" color="CaptionText">
+								Sign up to start tracking your job applications
+							</Text>
+						</Container>
+
+						<Container>
+							<Field.Root required>
+								<Field.Label>
+									Email
+									<Field.RequiredIndicator />
+								</Field.Label>
+
+								<Input
+									value={formData.email}
+									type="email"
+									placeholder="me@gmail.com"
+									onChange={e => handleInputChange('email', e.target.value)}
+								/>
+							</Field.Root>
+						</Container>
+
+						<Container>
+							<Field.Root required>
+								<Field.Label>
+									Password
+									<Field.RequiredIndicator />
+								</Field.Label>
+
+								<InputGroup
+									endElement={
+										<button
+											type="button"
+											onClick={handleTogglePasswordVisibility}
+										>
+											{passwordVisible ? <EyeClosed /> : <Eye />}
+										</button>
+									}
+								>
+									<Input
+										type={passwordVisible ? 'text' : 'password'}
+										required
+										placeholder="Password"
+										value={formData.password}
+										onChange={e =>
+											handleInputChange('password', e.target.value)
+										}
+									/>
+								</InputGroup>
+							</Field.Root>
+						</Container>
+
+						<Container>
+							<Field.Root required>
+								<Field.Label>
+									Confirm Password
+									<Field.RequiredIndicator />
+								</Field.Label>
+
+								<InputGroup
+									endElement={
+										<button
+											type="button"
+											onClick={handleToggleConfirmPasswordVisibility}
+										>
+											{confirmPasswordVisible ? <EyeClosed /> : <Eye />}
+										</button>
+									}
+								>
+									<Input
+										type={confirmPasswordVisible ? 'text' : 'password'}
+										required
+										placeholder="Confirm password"
+										value={formData.confirmPassword}
+										onChange={e =>
+											handleInputChange('confirmPassword', e.target.value)
+										}
+									/>
+								</InputGroup>
+
+								{formData.confirmPassword &&
+									formData.password !== formData.confirmPassword && (
+										<Field.ErrorText>Passwords do not match</Field.ErrorText>
+									)}
+							</Field.Root>
+						</Container>
+
+						<Center marginTop="3">
+							<Button
+								variant="solid"
+								type="submit"
+								disabled={!isFormValid || loading}
+							>
+								{loading ? 'Creating account...' : 'Create account'}
+							</Button>
+						</Center>
+					</form>
+				</Flex>
+			</Container>
+		</AbsoluteCenter>
 	);
 }
