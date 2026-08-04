@@ -31,7 +31,8 @@ Core architecture:
 
 - `React 19` for declarative UI
 - `Vite` for development and production bundling
-- `Tailwind CSS` for utility-first styling
+- `Chakra UI` for component-based styling and design system primitives
+- `next-themes` for light/dark color-mode support
 - `React Router v7` for page routing and protected route flows
 - `AuthProvider` context for auth state and session checks
 - Route loaders for data fetching before page render
@@ -88,8 +89,9 @@ The backend is user-scoped: every application belongs to a specific user, which 
 - `react-dom` — DOM rendering
 - `react-router` — client-side page routing
 - `vite` — fast build/dev tooling
-- `tailwindcss` — utility-first styling
-- `@tailwindcss/vite` — Tailwind integration with Vite
+- `@chakra-ui/react` — component library and styled UI primitives
+- `@emotion/react` — styling engine used by Chakra
+- `next-themes` — dark/light color-mode theming
 - `lucide-react` — icon system
 
 ### Backend

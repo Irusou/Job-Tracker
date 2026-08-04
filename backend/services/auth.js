@@ -1,0 +1,60 @@
+import bcrypt from 'bcrypt';
+import { generateToken, hashPassword } from '../utils/jwt.ts';
+export class AuthService {
+    _authRepository;
+    constructor(authRepository) {
+        this._authRepository = authRepository;
+    }
+    async signup(body) {
+        try {
+            // verify if a user with a given email exists
+            const user = await this._authRepository.findByEmail(body.email);
+            if (user)
+                throw new Error('email already in use');
+            const hashedPassword = await hashPassword(body.password);
+            const newUser = await this._authRepository.save({
+                email: body.email,
+                password: hashedPassword,
+            });
+            if (!newUser)
+                throw new Error('Failed to create new user');
+            return newUser.id;
+        }
+        catch (error) {
+            if (error instanceof Error) {
+                throw new Error(error.message);
+            }
+            throw new Error('something went wrong', {
+                cause: error,
+            });
+        }
+    }
+    async login(body) {
+        try {
+            const user = await this._authRepository.findByEmail(body.email);
+            if (!user)
+                throw new Error('user not found');
+            const passwordMatch = await bcrypt.compare(body.password, user.password);
+            if (!passwordMatch) {
+                throw new Error('invalid credentials');
+            }
+            const token = generateToken({ userId: user.id, email: user.email });
+            return {
+                token,
+                user: {
+                    id: user.id,
+                    email: user.email,
+                },
+            };
+        }
+        catch (error) {
+            if (error instanceof Error) {
+                throw new Error(error.message);
+            }
+            throw new Error('something went wrong', {
+                cause: error,
+            });
+        }
+    }
+}
+//# sourceMappingURL=auth.js.map
