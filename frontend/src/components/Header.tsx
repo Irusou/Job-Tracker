@@ -1,5 +1,4 @@
 import { BACKEND_PATH } from '@/config/url';
-import { useAuth } from '@/hooks/useAuth';
 import {
 	BriefcaseBusiness,
 	Kanban,
@@ -17,6 +16,7 @@ import {
 } from '@chakra-ui/react';
 import { ColorModeButton } from '@/components/ui/color-mode';
 import { NavLink, useNavigate } from 'react-router-dom';
+import { useAuthStore } from '@/store/authStore';
 
 const tabs = [
 	{
@@ -37,7 +37,7 @@ const tabs = [
 ];
 
 export default function Header() {
-	const { user, logout } = useAuth();
+	const { user, logout } = useAuthStore();
 	const navigate = useNavigate();
 
 	const handleLogout = async () => {

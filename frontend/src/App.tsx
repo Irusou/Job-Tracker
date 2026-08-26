@@ -9,8 +9,14 @@ import { getApplicationById } from './loaders/getApplicationById';
 import { getAllApplications } from './loaders/getAllApplications';
 import AuthLayout from './layouts/Auth';
 import { requireAuth } from './loaders/requireAuth';
+import { useEffect } from 'react';
+import { useAuthStore } from './store/authStore';
 
 function App() {
+	useEffect(() => {
+		useAuthStore.getState().checkAuth();
+	}, []);
+
 	const router = createBrowserRouter([
 		{
 			path: '/login',

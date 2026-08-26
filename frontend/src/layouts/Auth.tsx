@@ -1,9 +1,9 @@
 import { Navigate, Outlet } from 'react-router';
-import { useAuth } from '../hooks/useAuth';
 import Header from '@/components/Header';
+import { useAuthStore } from '@/store/authStore';
 
 export default function AuthLayout() {
-	const { user, loading } = useAuth();
+	const { user, loading } = useAuthStore();
 
 	if (loading) {
 		return <p>Loading...</p>;

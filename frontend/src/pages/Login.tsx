@@ -14,7 +14,7 @@ import {
 	InputGroup,
 	Text,
 } from '@chakra-ui/react';
-import { useAuth } from '@/hooks/useAuth';
+import { useAuthStore } from '@/store/authStore';
 
 interface LoginForm {
 	email: string;
@@ -28,7 +28,7 @@ export default function Login() {
 	});
 	const [passwordVisible, setPasswordVisible] = useState(false);
 	const navigate = useNavigate();
-	const { login, loading } = useAuth();
+	const { loading, login } = useAuthStore();
 
 	type FormField = keyof typeof formData;
 
