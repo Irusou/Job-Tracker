@@ -19,7 +19,10 @@ Key capabilities:
 - Authentication via JWT cookie
 - Form validation using Zod
 - Clean backend separation: routes, controllers, services, repositories
-- Frontend routing, protected routes, and data loading
+- Frontend routing, protected routes, and route-level data loading
+- Zustand-based authentication state with session restoration through `/auth/me`
+- Light and dark color modes with Chakra UI
+- Docker Compose configuration for the frontend and backend services
 
 ## 🏗 Architecture
 
@@ -34,13 +37,13 @@ Core architecture:
 - `Chakra UI` for component-based styling and design system primitives
 - `next-themes` for light/dark color-mode support
 - `React Router v7` for page routing and protected route flows
-- `AuthProvider` context for auth state and session checks
+- `Zustand` store for auth state, login/logout, and session checks
 - Route loaders for data fetching before page render
 
 Responsibilities:
 
-- Render user UI for login, signup, dashboard, applications list, application detail, and board views
-- Manage auth state and session refresh
+- Render the public Home page, auth screens, dashboard, applications list, application detail, and board views
+- Manage auth state and session restoration through the Zustand store
 - Call backend REST API endpoints using credentialed fetch requests
 - Keep frontend routing independent from API implementation details
 
