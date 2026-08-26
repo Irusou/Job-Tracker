@@ -147,9 +147,12 @@ Backend structure:
 Frontend structure:
 
 - `src/App.tsx` — router setup and application skeleton
-- `src/context/` — auth context provider
-- `src/loaders/` — data loaders and auth guard
-- `src/pages/` — page components for user workflows
+- `src/api/` — API helpers such as the current-user request
+- `src/components/` — shared UI and application dialogs
+- `src/layouts/Auth.tsx` — protected-route layout and redirect handling
+- `src/loaders/` — route data loaders for applications
+- `src/pages/` — Home, auth, dashboard, application, and board views
+- `src/store/authStore.ts` — Zustand authentication state
 - `src/config/url.ts` — backend API path configuration
 
 ## ⚙️ Getting Started
@@ -182,6 +185,16 @@ Frontend structure:
    ```bash
    npm run dev
    ```
+
+### Docker Compose
+
+The repository includes Dockerfiles for both services and a Compose configuration for local containerized development:
+
+```bash
+docker compose up --build
+```
+
+The frontend is available at `http://localhost:5173` and the backend at `http://localhost:3000`.
 
 ## 🧪 Production Build
 
