@@ -1,10 +1,9 @@
+import { BACKEND_PATH } from '@/config/url';
 import type { Application } from '../types/Application';
-
-const URL = 'http://localhost:3000/api/v1/applications';
 
 export async function getAllApplications(): Promise<Application[]> {
 	try {
-		const response = await fetch(`${URL}`, {
+		const response = await fetch(`${BACKEND_PATH}/applications`, {
 			credentials: 'include',
 		});
 

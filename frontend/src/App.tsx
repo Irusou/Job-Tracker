@@ -8,9 +8,9 @@ import Application from './pages/Application';
 import { getApplicationById } from './loaders/getApplicationById';
 import { getAllApplications } from './loaders/getAllApplications';
 import AuthLayout from './layouts/Auth';
-import { requireAuth } from './loaders/requireAuth';
 import { useEffect } from 'react';
 import { useAuthStore } from './store/authStore';
+import Home from './pages/Home';
 
 function App() {
 	useEffect(() => {
@@ -18,6 +18,10 @@ function App() {
 	}, []);
 
 	const router = createBrowserRouter([
+		{
+			path: '/',
+			Component: Home,
+		},
 		{
 			path: '/login',
 			Component: Login,
@@ -28,7 +32,6 @@ function App() {
 		},
 		{
 			Component: AuthLayout,
-			loader: requireAuth,
 			children: [
 				{
 					path: '/dashboard',

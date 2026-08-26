@@ -1,14 +1,16 @@
+import { BACKEND_PATH } from '@/config/url';
 import type { Application } from '../types/Application';
-
-const URL = 'http://localhost:3000/api/v1/applications';
 
 export const getApplicationById = async (
 	applicationId: string,
 ): Promise<Application | null> => {
 	try {
-		const response = await fetch(`${URL}/${applicationId}`, {
-			credentials: 'include',
-		});
+		const response = await fetch(
+			`${BACKEND_PATH}/applications/${applicationId}`,
+			{
+				credentials: 'include',
+			},
+		);
 
 		if (!response.ok) {
 			throw 'Failed to get application';
