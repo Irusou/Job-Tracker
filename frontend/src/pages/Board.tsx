@@ -12,7 +12,9 @@ export default function Board() {
   const [overStatus, setOverStatus] = useState<string | null>(null);
 
   // Keep local state in sync if the loader revalidates
-  useEffect(() => setApps(loaded), [loaded]);
+  useEffect(() => {
+    setApps(loaded);
+  }, [loaded]);
 
   const statuses = Object.keys(statusConfig);
 
