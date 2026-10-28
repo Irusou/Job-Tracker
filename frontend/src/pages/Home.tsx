@@ -105,7 +105,7 @@ export default function Home() {
 
           <Flex gap="3" mt="6">
             <Button asChild colorPalette="green">
-              <RouterLink to="/signin">Start tracking</RouterLink>
+              <RouterLink to="/signup">Start tracking</RouterLink>
             </Button>
 
             <Button asChild variant="outline">
